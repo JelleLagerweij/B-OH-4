@@ -7,7 +7,7 @@
 module load 2022r2
 module load openmpi
 
-lmp=~/software/lammps/lammps2022/src/ # getting the correct run file location
+lmp=~/software/lammps/lammps2018/src/ # getting the correct run file location
 srun $lmp/lmp_mpi < INPUT # computing with n cpu cores.
 wait
 
