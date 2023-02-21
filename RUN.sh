@@ -65,9 +65,9 @@ do
 		N_BOH4=$(($m*$N_salt))
 
 		# Create initial configuration using fftool and packmol
-		~/software/lammps/la*22/fftool/fftool $N_wat water.xyz $N_Na Na.xyz $N_BOH4 BOH4.xyz -r 50 > /dev/null
-		~/software/lammps/la*22/packmol*/packmol < pack.inp > packmol.out
-		~/software/lammps/la*22/fftool/fftool $N_wat water.xyz $N_Na Na.xyz $N_BOH4 BOH4.xyz -r 50 -l > /dev/null
+		~/software/lammps/la*18/fftool/fftool $N_wat water.xyz $N_Na Na.xyz $N_BOH4 BOH4.xyz -r 50 > /dev/null
+		~/software/lammps/la*18/packmol*/packmol < pack.inp > packmol.out
+		~/software/lammps/la*18/fftool/fftool $N_wat water.xyz $N_Na Na.xyz $N_BOH4 BOH4.xyz -r 50 -l > /dev/null
 
 		# removing the force data from packmol as I use my own forcefield.data. copy data.lmp remove rest
 		rm -f in.lmp
