@@ -11,7 +11,7 @@ Press=$(expr 1)			# Pressure in atm
 N_wat=$(expr 500)		# Number of water molecules
 N_salt=$(expr 9)		# Number of Na2BOH4's per 1m solution
 n=$(expr 1)				# Number of Na's per salt molecule
-m=$(expr 3)				# Concentration file to use
+m=$(expr 0)				# Concentration file to use
 
 
 for folder in running
@@ -19,7 +19,7 @@ do
 	mkdir $folder
 	cd $folder
 
-	for i in 1 2 3 4
+	for i in 5 6 7
 	do
 		mkdir $i
 		cd $i
