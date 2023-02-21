@@ -19,7 +19,7 @@ do
 	mkdir $folder
 	cd $folder
 
-	for i in 1 2 3 4
+	for i in 5 6 7
 	do
 		mkdir $i
 		cd $i
@@ -65,9 +65,9 @@ do
 		N_BOH4=$(($m*$N_salt))
 
 		# Create initial configuration using fftool and packmol
-		~/software/lammps/la*18/fftool/fftool $N_wat water.xyz $N_Na Na.xyz $N_BOH4 BOH4.xyz -r 50 > /dev/null
+		~/software/lammps/la*18/fftool/fftool $N_wat water.xyz -r 50 > /dev/null
 		~/software/lammps/la*18/packmol*/packmol < pack.inp > packmol.out
-		~/software/lammps/la*18/fftool/fftool $N_wat water.xyz $N_Na Na.xyz $N_BOH4 BOH4.xyz -r 50 -l > /dev/null
+		~/software/lammps/la*18/fftool/fftool $N_wat water.xyz -r 50 -l > /dev/null
 
 		# removing the force data from packmol as I use my own forcefield.data. copy data.lmp remove rest
 		rm -f in.lmp
