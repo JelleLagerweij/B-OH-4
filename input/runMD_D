@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH --job-name="JOB_NAME"
+#SBATCH -n 48
+#SBATCH -t 24:00:00
+#SBATCH --mem-per-cpu=1G
+
+module load 2022r2
+module load openmpi
+
+lmp=~/software/lammps/lammps2022/src/ # getting the correct run file location
+srun $lmp/lmp_mpi < INPUT # computing with n cpu cores.
+wait
+
+exit 0

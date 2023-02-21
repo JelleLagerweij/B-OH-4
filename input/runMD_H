@@ -1,0 +1,13 @@
+#!/bin/bash
+#SBATCH --job-name="JOB_NAME"
+#SBATCH -p parallel-12
+#SBATCH -n 12
+#SBATCH --exclusive
+#SBATCH --mem-per-cpu=1G
+#SBATCH -t 6-00:00:00
+
+lmp=~/software/lammps/lam*22/src/ # getting the correct run file location
+mpirun $lmp/lmp_mpi < simulation.in # computing with n cpu cores.
+wait
+
+exit 0

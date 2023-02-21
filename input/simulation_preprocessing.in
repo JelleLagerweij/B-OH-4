@@ -1,0 +1,156 @@
+####################################################
+# Preprocessing Li2SO4 in water
+#################### SETTING UP ####################
+units real
+dimension 3
+newton on
+boundary p p p
+atom_style full
+
+#################### VARIABLES ####################
+variable Temp equal T_VALUE    # Temperature in K
+variable Pres equal 5.0       # Pressure in atm.
+
+variable RandomSeed equal R_VALUE # The random seed for velocity
+variable tstep equal dt_VALUE      # 1fs 
+variable Ninptpre equal 10000 # Pre-initialize the NPT ensemble (very small timesteps)
+variable Ninpt equal 5000000  # Initialize the NPT ensemble
+variable Npnpt equal 5000000  # Production in the NPT ensemble (volume)
+variable Ninvtpre equal 10000 # Pre-initialize the NVT ensemble (very small timesteps)
+variable Ninvt equal 500000   # Initialize the NVT ensemble
+variable Nrun equal 50000     # production in the NVT ensemble (Transport properties) 1ns
+variable Nf equal 1000         # Nfreq (fix ave/time and thermo)
+variable Ne equal  1         # Nevery (fix ave/time)
+variable Nr equal ${Nf}/${Ne} # Nrepeat (fix ave/time)
+variable NBR equal ${Npnpt}/100 # Block averaging for density (NPT)
+variable Nd equal ${Npnpt}/10 # Frequency of outputting positions of atoms in the NVT ensemble
+
+variable nb equal 10          # Number of blocks (fix ordern)
+variable nbe equal 20         # Number of block elements (fix ordern)
+variable Nvisc equal 5        # Nevery for viscosity (fix ordern: sample data at (Nvisc*2))
+variable Ncond equal 5        # Nevery for Tconductivity (fix ordern: sample data at (Ncond*2))
+variable Ndiff equal 1000     # Nevery for diffusivity (fix ordern: sample data at (Ndiff))
+variable Nwrit equal 100000   # Nwrite for transport properties (fix ordern: write every (Nwrit))
+
+variable Nrdfe equal 1000     # Nevery for RDF (fix ave/time)
+variable Nrdfw equal 1000     # Nwrite for RDF (compute rdf/ext: write every (Nrdfw*Nrdfe))
+variable binnum equal 2000    # Number of bins for RDF
+
+#################### ATOM DEFINITION and FORCEFIELD ####################
+read_data ./data.lmp                     # read the positions
+include ./forcefield.data                # read the force field
+
+#################### INITIALIZATION ####################
+# groups for the central atoms of water (O)
+
+group wat type 1		# O water
+group Li type 3			# Lithium atom
+group S type 5			# S sulfite group centre
+
+# neigbor lists
+neighbor 2.0 bin
+neigh_modify every 1 delay 0 check yes
+
+# velocity-Verlet integrator
+run_style verlet
+
+# initializing velocities
+velocity all create ${Temp} ${RandomSeed}  
+
+# rate of writing thermal properties to the log file
+thermo_style custom step density temp press etotal
+thermo_modify flush yes
+thermo ${Nf}
+
+#################### 2) Initialize the NPT ensemble ####################
+######### Go to the correct temperature now ant initiate that ##########
+fix integrate all rigid/npt/small molecule temp ${Temp} ${Temp} 10.0 iso ${Pres} ${Pres} 100.0
+
+# add dump trajectory
+
+# Initializing the whole system with very small timesteps in the NPT ensemble
+timestep 0.001
+run ${Ninptpre} 
+timestep 0.01
+run ${Ninptpre} 
+timestep 0.1
+run ${Ninptpre} 
+timestep 0.2
+run ${Ninptpre} 
+timestep 0.5
+run ${Ninptpre} 
+reset_timestep 0
+
+# continuing the initialization with the final value of timestep
+unfix integrate
+fix integrate all rigid/npt/small molecule temp ${Temp} ${Temp} 100.0 iso ${Pres} ${Pres} 1000.0
+
+timestep ${tstep}
+
+
+run ${Ninpt}
+reset_timestep 0
+
+
+#################### 3) Obtaining average volume in NPT ######################
+# Creating restart files
+restart ${Nf} 1.restart 2.restart
+
+# Getting the average volume of the system
+variable Volume equal vol
+fix VoluAve all ave/time 1 ${Npnpt} ${Npnpt} v_Volume file volume.dat
+
+variable Dens equal density
+fix DensAve all ave/time 1 ${NBR} ${NBR} v_Dens file density.dat
+
+compute T1 all temp
+fix TempAve1 all ave/time 1 ${NBR} ${NBR} c_T1 file temperatureNPT.dat
+
+compute P1 all pressure T1
+fix PressAve1 all ave/time 1 ${NBR} ${NBR} c_P1 file pressureNPT.dat
+
+# Dumping 20 snapshots over the run of this entire excercise
+dump trjectory all xyz ${Nd} movie.xyz
+dump_modify trjectory element Ow H Li m S Os
+
+run ${Npnpt}
+
+#################### 4) Initializing the NVT ensemble ####################
+# scaling the size of the system to the average volume
+variable sidesize equal (f_VoluAve^(1.0/3.0))    # get the volume
+variable xlow equal xlo
+variable ylow equal ylo
+variable zlow equal zlo
+variable xhig equal (xlo+${sidesize})
+variable yhig equal (ylo+${sidesize})
+variable zhig equal (zlo+${sidesize})
+change_box all x final ${xlow} ${xhig} y final ${ylow} ${yhig} z final ${zlow} ${zhig}
+unfix DensAve
+unfix VoluAve
+unfix TempAve1
+unfix PressAve1
+
+# changing the ensemble to NVT
+unfix integrate
+fix integrate all rigid/nvt/small molecule temp ${Temp} ${Temp} 10.0
+
+timestep 0.001
+run ${Ninvtpre} 
+timestep 0.01
+run ${Ninvtpre} 
+timestep 0.1
+run ${Ninvtpre} 
+timestep 0.2
+run ${Ninvtpre} 
+timestep 0.5
+run ${Ninvtpre}
+
+unfix integrate
+fix integrate all rigid/nvt/small molecule temp ${Temp} ${Temp} 100.0
+# continuing the initialization with the final value of timestep
+timestep ${tstep}
+
+
+run ${Ninvt}
+
+quit

@@ -1,0 +1,64 @@
+#--------INTERMOLECULAR POTENTIAL -------------------#
+# ---------------Developed for Li2SO4 in water (tip4p/2005) system-----#
+
+mass 1 15.9994 # Ow
+mass 2 1.008 # Hw
+mass 3 6.841  # Li  -0.01, which went to ghost
+mass 4 0.1 # m ghost of lithium
+mass 5 4 # S  Center site without weight
+mass 6 23.01565 # Os (added sulfur weight)
+
+
+pair_style lj/cut/tip4p/long 1 2 1 1 0.1546 10.0
+kspace_style pppm/tip4p 1.0e-5
+pair_modify mix arithmetic tail yes # ATC and Lorentz-Berthelot combining rules
+
+#-----------------Combinations----------------------------
+# atomtype atomtype epsilon sigma
+
+pair_coeff 1 1 0.185200 3.1589     # Ow-Ow
+pair_coeff 1 2 0.000000 0.0000     # Ow-Hw
+pair_coeff 1 3 0.167459 2.12       # Ow-Li
+pair_coeff 1 4 0.000000 0.0000     # Ow-m
+pair_coeff 1 5 0.215246 3.35445    # Ow-S  COMPUTE BY HAND LB mix
+pair_coeff 1 6 0.150335 3.40445    # Ow-Os
+
+pair_coeff 2 2 0.000000 0.0000     # Hw-Hw
+pair_coeff 2 3 0.000000 0.0000     # Hw-Li
+pair_coeff 2 4 0.000000 0.0000     # Hw-m
+pair_coeff 2 5 0.000000 0.0000     # Hw-S
+pair_coeff 2 6 0.000000 0.0000     # Hw-Os
+
+pair_coeff 3 3 0.103989 1.4397     # Li-Li
+pair_coeff 3 4 0.000000 0.0000     # Li-m
+pair_coeff 3 5 0.161291 2.49485    # Li-S   COMPUTE BY HAND LB mix
+pair_coeff 3 6 0.192067 2.844850   # Li-Os
+
+pair_coeff 4 4 0.000000 0.0000     # m-m
+pair_coeff 4 5 0.000000 0.0000     # m-S
+pair_coeff 4 6 0.000000 0.0000     # m-Os
+
+pair_coeff 5 5 0.250167 3.5500     # S-S
+pair_coeff 5 6 0.223762 3.6000     # S-Os  CHECK BY HAND LB mix
+
+pair_coeff 6 6 0.200143 3.6500     # Os-Os
+
+bond_style  harmonic
+bond_coeff 1 2000 0.9572           # Ow-Hw
+bond_coeff 2 1000 0.5		   # Li-m
+bond_coeff 3 1000 1.490		   # S-Os
+
+angle_style harmonic
+angle_coeff 1 200 104.52           # H-Ow-H
+angle_coeff 2 200 109.5           # Os-S-Os
+
+#dihedral_style none 
+#improper_style none
+
+set type 1 charge -1.1128          # O
+set type 2 charge +0.5564          # OH
+set type 3 charge +0.8500          # Li
+set type 4 charge 0		   # m
+set type 5 charge +0.9000          # S
+set type 6 charge -0.6500          # Os
+

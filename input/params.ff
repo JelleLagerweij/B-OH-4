@@ -1,0 +1,27 @@
+# Tip4p water VEGA salt (doesn't matter too much, will be overwriten taler anyways
+
+ATOMS
+#	Type	m/uma	q/e	pot	pars
+Ow	Ow	15.999	-1.1128	lj	3.1589	0.1852
+Hw	Hw	1.008	0.5564	lj	0.0	0.0
+Li  Li  22.980  0.8500  lj 2.3014  0.4746
+m	m	0.01	0.000	lj	0	0
+S   S   35.453  0.900   lj  2.0965  0.0600
+Os  Os  5.453  -0.65   lj   2.0965  0.0600 
+
+
+# Bond model is modelled as rigid in this case
+# ka in fftool is ka/2
+BONDS
+#i	j	pot	re/A	ka/KJmol-1
+Ow	Hw	cons	0.9572	1.000
+Li	m	cons	0.5  	1.000
+S	Os	cons	1.490	1.000
+
+
+# Model for angles is also rigid
+# ka in fftool is ka/2
+ANGLES
+#i	j	k	pot	th/deg	ka/Kjmol-1
+Hw	Ow	Hw	cons	104.52	1.0 
+Os	S	Os	cons	109.5	1.0
