@@ -9,8 +9,8 @@ Temp=$(expr 298.15)		# Temperature in K
 Press=$(expr 1)			# Pressure in atm
 
 N_wat=$(expr 500)		# Number of water molecules
-N_salt=$(expr 9)		# Number of Li2SO4's per 1m solution
-n=$(expr 2)				# Number of Li's per salt molecule
+N_salt=$(expr 9)		# Number of Na2BOH4's per 1m solution
+n=$(expr 1)				# Number of Na's per salt molecule
 m=$(expr 3)				# Concentration file to use
 
 
@@ -29,9 +29,9 @@ do
 		cp ../../input/simulation.in .
 		cp ../../input/copy_files.sh .
 		cp ../../input/forcefield.data .
-		cp ../../input/Li.xyz .
+		cp ../../input/Na.xyz .
 		cp ../../input/params.ff .
-		cp ../../input/SO4.xyz .
+		cp ../../input/BOH4.xyz .
 		cp ../../input/water.xyz .
 
 		# Set simulation_preprocessing.in file values
@@ -56,18 +56,18 @@ do
 		mkdir config
 		mv ./water.xyz config/
 		mv ./params.ff config/
-		mv ./SO4.xyz config/
-		mv ./Li.xyz config/
+		mv ./BOH4.xyz config/
+		mv ./Na.xyz config/
 		cd config
 
 		# compute total number of Li and SO4
-		N_Li=$(($m*$N_salt*$n))
-		N_SO4=$(($m*$N_salt))
+		N_Na=$(($m*$N_salt*$n))
+		N_BOH4=$(($m*$N_salt))
 
 		# Create initial configuration using fftool and packmol
-		~/software/lammps/la*22/fftool/fftool $N_wat water.xyz $N_Li Li.xyz $N_SO4 SO4.xyz -r 55 > /dev/null
+		~/software/lammps/la*22/fftool/fftool $N_wat water.xyz $N_Na Na.xyz $N_BOH4 BOH4.xyz -r 50 > /dev/null
 		~/software/lammps/la*22/packmol*/packmol < pack.inp > packmol.out
-		~/software/lammps/la*22/fftool/fftool $N_wat water.xyz $N_Li Li.xyz $N_SO4 SO4.xyz -r 55 -l > /dev/null
+		~/software/lammps/la*22/fftool/fftool $N_wat water.xyz $N_Na Na.xyz $N_BOH4 BOH4.xyz -r 50 -l > /dev/null
 
 		# removing the force data from packmol as I use my own forcefield.data. copy data.lmp remove rest
 		rm -f in.lmp

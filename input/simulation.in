@@ -49,8 +49,8 @@ include ./forcefield.data                # read the force field
 
 #################### INITIALIZATION ####################
 group wat type 1		# O water
-group Li type 3			# Lithium atom
-group S type 5			# S sulfite group centre
+group Na type 3			# Sodium atom
+group B type 5			# B of B(OH)4
 
 # neigbor lists
 neighbor 2.0 bin
@@ -191,7 +191,7 @@ compute rdfs all rdf/ext Nbin ${binnum} Nwrite ${Nrdfw}
 fix f4 all ave/time 1 1 ${Nrdfe} c_rdfs
 
 dump trjectory all xyz ${Nd} movie.xyz
-dump_modify trjectory element Ow H Li m S Os
+dump_modify trjectory element Ow H Na m B OH
 
 run ${Nrun1}
 shell bash copy_files.sh 0.25ns
