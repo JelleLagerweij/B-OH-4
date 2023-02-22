@@ -1,0 +1,68 @@
+# ----------------- INTERMOLECULAR POTENTIAL -------------------
+# ---------------Developed for Na(B(OH)4) in water (tip4p/2005) system-----
+
+mass 1 15.9994 # Ow
+mass 2 1.00794 # Hw
+mass 3 22.9397 # Na
+mass 4 0.0500  # M
+mass 5 10.811  # B(B(OH)4)
+mass 6 17.008  # OH(B(OH)4)
+
+
+pair_style lj/cut/tip4p/long 1 2 1 1 0.1546 10.0
+kspace_style pppm/tip4p 1.0e-5
+pair_modify tail yes # ATC 
+
+#-----------------Combinations----------------------------
+		
+pair_coeff 1 1 0.1852 3.1589     # Ow-Ow
+pair_coeff 1 2 0.0000 0.0000     # Ow-Hw
+pair_coeff 1 3 0.1897 2.60838    # Ow-Na
+pair_coeff 1 4 0.0000 0.0000     # Ow-M
+pair_coeff 1 5 0.0000 0.0000     # Ow-B(B(OH)4)
+pair_coeff 1 6 0.1361 3.0100    # Ow-OH(B(OH)4)
+
+pair_coeff 2 2 0.0000 0.0000     # Hw-Hw
+pair_coeff 2 3 0.0000 0.0000     # Hw-Na
+pair_coeff 2 4 0.0000 0.0000     # Hw-M
+pair_coeff 2 5 0.0000 0.0000     # Hw-B(B(OH)4)
+pair_coeff 2 6 0.0000 0.0000     # Hw-OH(B(OH)4)
+    
+pair_coeff 3 3 0.3519 2.2174     # Na-Na
+pair_coeff 3 4 0.0000 0.0000     # Na-M
+pair_coeff 3 5 0.0000 0.0000     # Na-B(B(OH)4)
+pair_coeff 3 6 0.1876 2.5837     # Na-OH(B(OH)4)
+
+pair_coeff 4 4 0.0000 0.0000     # M-M
+pair_coeff 4 5 0.0000 0.0000     # M-B
+pair_coeff 4 6 0.0000 0.0000     # M-OH
+
+pair_coeff 5 5 0.0000 0.0000     # B(B(OH)4)-B(B(OH)4)
+pair_coeff 5 6 0.0000 0.0000     # B(B(OH)4)-OH(B(OH)4)
+
+pair_coeff 6 6 0.1000 2.9500     # OH(B(OH)4)-OH(B(OH)4)
+
+
+bond_style  harmonic 
+bond_coeff 1 1000 0.9572          # Ow-Hw
+bond_coeff 2 1000 0.5000          # Na-M
+bond_coeff 3 1000 1.4900          # B(B(OH)4)-OH(B(OH)4)
+
+angle_style harmonic
+angle_coeff 1 100 104.52          # H-O-H
+angle_coeff 2 100 109.5           # OH(B(OH)4)-B(B(OH)4)-OH(B(OH)4)
+#dihedral_style none 
+#improper_style none
+ 
+set type 1 charge -1.1128        # O
+set type 2 charge +0.5564        # OH
+set type 3 charge +0.8500        # Na
+set type 4 charge 0.00000        # M
+set type 5 charge +2.5500        # B(B(OH)4)
+set type 6 charge -0.8500        # OH(B(OH)4) 
+
+
+
+
+
+
